@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style media="screen">
+      div {
+        width:50px;
+        height:50px;
+
+        margin:5px;
+
+      }
+
+      #bird {
+
+        position:absolute;
+        top:15px;
+        left:40px;
+        background-image: url("img/bird.png");
+        background-size: contain;
+
+      }
+
+      #tube_down {
+        position: absolute;
+        background-color: green;
+        top:450px;
+        left:1200px;
+        height: 181px;
+        width: 120px;
+      }
+
+      #tube_up {
+        position: absolute;
+        background-color: green;
+        top:0px;
+        left:1200px;
+        height: 250px;
+        width: 120px;
+      }
+      #score {
+       position: fixed;
+       right: 10px;
+       top: 10%;
+       padding: 10px;
+       background: #ffe;
+       border: 1px solid #333;
+      }
+      .score {
+       position: fixed;
+       right: 10px;
+       top: 10%;
+       padding: 10px;
+       height: auto;
+       width: auto;
+       background: #ffe;
+       border: 1px solid #333;
+       font-size: 20px;
+      }
+      .score1 {
+       position: fixed;
+       right: 80px;
+       top: 10%;
+       padding: 10px;
+       height: auto;
+       width: auto;
+       background: #ffe;
+       border: 1px solid #333;
+       font-size: 20px;
+      }
+      #maxscore {
+       position: fixed;
+       right: 10px;
+       top: 20%;
+       padding: 10px;
+       background: #ffe;
+       border: 1px solid #333;
+      }
+      .maxscore {
+       position: fixed;
+       right: 10px;
+       top: 20%;
+       padding: 10px;
+       height: auto;
+       width: auto;
+       background: #ffe;
+       border: 1px solid #333;
+       font-size: 20px;
+      }
+      .maxscore1 {
+       position: fixed;
+       right: 80px;
+       top: 20%;
+       padding: 10px;
+       height: auto;
+       width: auto;
+       background: #ffe;
+       border: 1px solid #333;
+       font-size: 20px;
+      }
+	  #gameover{
+	  width: 400px;
+	  height: 600px;
+	  margin-left: 40%;
+	  margin-top: 2%;
+	  position: fixed;
+	  z-index: 99;
+	  vertical-align: middle;
+	  visibility: hidden;
+    background-image: url("img/gameover.png");
+
+	  }
+    body {
+      background-image: url("img/bg.png");
+    }
+    </style>
+
+  <body>
+    <div id="gameover">
+	<img src="2.png" width="100%" height="40%">
+
+	</div>
+    <div class="score1" >Счёт:</div>
+    <div class="score" id="score"> </div>
+    <div class="maxscore1" >Рекорд:</div>
+    <div class="maxscore" id="maxscore"> </div>
+
+    <div class="" id="bird" onclick="move()">
+
+    </div>
+
+    <div class="" id="tube_down">
+      1
+    </div>
+
+    <div class="" id="tube_up">
+      1
+    </div>
+
+
+</body>
+  <script type="text/javascript">
+      let bird_x=110;
+      let bird_y=10;
+      let bird_vy=0;
+      let bird_ay=0.2;
+      let bird_vx=0;
+      let bird_ax=0;
+
+	  let tube_uph=250;
+	  let tube_downy=tube_uph+150;
+	  let h=innerHeight;
+    let w=innerWidth;
+	  let tube_downh=h-tube_downy;
+
+	  let run=true;
+
+      let tube_x=w+100;
+      let tube_vx=-13;
+
+      var score = 0;
+      if (maxscore<=score){
+        maxscore=score
+
+      }
+
+      setTimeout(move,300);
+	  function collision(){
+	  if (bird_x>tube_x && bird_x<tube_x+120){
+	  if (bird_y<tube_uph || bird_y>tube_downy){
+	  return true
+	  }
+	  }
+	  return false
+	  }
+      function move() {
+        let el = document.getElementById('bird');
+        bird_y=bird_y+bird_vy;
+        bird_vy=bird_vy+bird_ay;
+        bird_x=bird_x+bird_vx;
+        bird_vx=bird_vx+bird_ax;
+
+        el.style.left=bird_x+"px";
+        el.style.top=bird_y+"px";
+        if (bird_y>h-100) {
+		run=false
+		document.getElementById('gameover').style.visibility="visible"
+        document.getElementById('maxscore').innerHTML = score;
+        }
+		if (collision()){
+		console.log("!Столкновение!")
+		document.getElementById('maxscore').innerHTML = score;
+		run=false;
+		document.getElementById('gameover').style.visibility="visible"
+		}
+		if (run==true){
+		setTimeout(move,20)
+		}
+        let tube_up=document.getElementById('tube_up');
+        let tube_down=document.getElementById('tube_down');
+        tube_x=tube_x+tube_vx;
+        tube_up.style.left=tube_x+"px";
+        tube_down.style.left=tube_x+"px";
+
+        if (tube_x<=-121) {
+          tube_x=w+100;
+		  tube_uph=Math.floor(Math.random()*(h-500)+200);
+		  tube_downy=tube_uph+150;
+		  tube_downh=h-tube_downy-50;
+		  console.log(h);
+          score=score+1;
+		  tube_up.style.height=tube_uph+"px"
+		  tube_down.style.top=tube_downy+"px"
+		  tube_down.style.height=tube_downh+"px"
+
+          document.getElementById('score').innerHTML = score;
+          console.log(score);
+
+        }
+
+
+      }
+      document.onkeypress = jump;
+
+      function jump() {
+        console.log(event);
+        if (event.key==' ') {
+          bird_vy=-5;
+        }
+        /*
+        if (event.key=='a') {
+          bird_vx=-5;
+        }
+        if (event.key=='d') {
+          bird_vx=5;
+        }
+        if (event.key=='s') {
+          bird_vx=0;
+        }*/
+      }
+
+  </script>
+</html>
